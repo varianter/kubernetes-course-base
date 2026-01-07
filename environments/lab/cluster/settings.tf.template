@@ -1,0 +1,19 @@
+locals {
+  ### Githubsettings
+  argocd_github_app_id              = "" #
+  argocd_github_app_installation_id = "" #
+
+  ### Domain settings
+  letsencrypt_notifications_email = ""                # Email of course instructor
+  cluster_dns_zone                = "variantlabs.dev" # Public domain for ingress controller
+  cluster_dns_wildcard_subdomain  = "*.dev"
+
+
+  ### Azure Config
+  tenant_id                 = ""
+  subscription_id           = ""
+  enterprise_application_id = ""
+  resource_group_name       = "" # Resource group name, e.g. rg-course-<customer>-ne (for north europe)
+  shared_keyvault_name      = "" # KeyVault name, e.g. kv-course-<customer>-ne
+  container_registry_name   = "" # Registry name, e.g. customernamecourseacr
+}

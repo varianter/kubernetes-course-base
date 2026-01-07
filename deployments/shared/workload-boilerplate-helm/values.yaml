@@ -1,0 +1,38 @@
+# Default values for %WORKLOAD%-%ENVIRONMENT%
+replicaCount: 1
+image:
+  repository: variantplatformacr.azurecr.io/%WORKLOAD%
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-lab
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+    nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "24k"
+  host: %SUBDOMAIN%.variant.dev
+  tls:
+    enabled: true
+    secretName: %WORKLOAD%-%ENVIRONMENT%-tls
+secrets: []
+# secrets: 
+#   - name: AppSettings__SomeApiKey
+#     secret: %WORKLOAD%-api-key
+
+env: []
+# env: 
+#   - name: ENVIRONMENT
+#     value: "%ENVIRONMENT%"
+  
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

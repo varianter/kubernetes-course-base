@@ -1,0 +1,25 @@
+# Since this app is commented out, it will not be deployed by ArgoCD.
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: kustomize-sample-dev
+#   namespace: argocd
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/varianter/infrastructure-as-code
+#     targetRevision: HEAD
+#     path: environments/test/workloads/hybrid-workload/overlays/dev
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: test
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     retry:
+#       limit: 5
+#       backoff:
+#         duration: 5s
+#         factor: 2
+#         maxDuration: 3m

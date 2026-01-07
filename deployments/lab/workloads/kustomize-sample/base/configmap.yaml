@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app: kustomize-sample
+data:
+  APP_NAME: "kustomize-sample"
+  LOG_LEVEL: "info"
+  FEATURE_FLAG_A: "false"
+  FEATURE_FLAG_B: "false"
+  config.json: |
+    {
+      "server": {
+        "port": 80,
+        "timeout": 30
+      },
+      "database": {
+        "pool_size": 10,
+        "timeout": 5000
+      }
+    }

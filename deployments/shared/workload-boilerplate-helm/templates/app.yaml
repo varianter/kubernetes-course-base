@@ -1,0 +1,7 @@
+{{ include "variant-standard-lib.ingress" . }}
+---
+{{ include "variant-standard-lib.deployment" . }}
+---
+{{ include "variant-standard-lib.service" . }}
+---
+{{ include "variant-standard-lib.spc" . }}
