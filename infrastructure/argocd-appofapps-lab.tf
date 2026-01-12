@@ -16,8 +16,8 @@ resource "kubectl_manifest" "argocd_app_of_apps_lab" {
             revision = "HEAD"
             directories = [
               {
-                # Scans excercises/<namespace>/<app-name>. Excludes directories starting with _ 
-                path = "excercises/*/*"
+                # Scans excercises/<namespace>/<excercise group>/<app-name>. Excludes directories starting with _ 
+                path = "excercises/*/*/*"
               },
               {
                 path    = "*/_*"
@@ -28,7 +28,7 @@ resource "kubectl_manifest" "argocd_app_of_apps_lab" {
       ]
       template = {
         metadata = {
-          name = "{{.path.basename}}"
+          name = "{{index .path.segments 1}}-{{.path.basename}}"
         }
         spec = {
           project = "default"

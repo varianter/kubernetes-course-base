@@ -6,3 +6,4 @@ keyfile.pub
 .terraform/
 .terraform.lock.hcl
 settings.tf
+.terraform.tfstate.lock.info
