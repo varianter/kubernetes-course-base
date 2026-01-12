@@ -17,7 +17,11 @@ resource "kubectl_manifest" "argocd_app_of_apps_lab" {
             directories = [
               {
                 # Scans excercises/<namespace>/<app-name>. Excludes directories starting with _ 
-                path = "excercises/*/[!_]*"
+                path = "excercises/*/*"
+              },
+              {
+                path    = "*/_*"
+                exclude = true
               }
             ]
         } }
