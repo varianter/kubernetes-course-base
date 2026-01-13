@@ -27,8 +27,9 @@ resource "kubectl_manifest" "letsencrypt" {
     }
     spec = {
       acme = {
-        server = "https://acme-v02.api.letsencrypt.org/directory"
-        email  = local.letsencrypt_notifications_email
+        // letsencrypt_cert_cluster_issuer = "https://acme-v02.api.letsencrypt.org/directory" // Production
+        letsencrypt_cert_cluster_issuer = "https://acme-staging-v02.api.letsencrypt.org/directory" // Use staging to avoid rate-limiting
+        email                           = local.letsencrypt_notifications_email
         privateKeySecretRef = {
           name = local.letsencrypt_cert_cluster_issuer
         }
