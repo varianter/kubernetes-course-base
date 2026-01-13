@@ -20,7 +20,7 @@ resource "kubectl_manifest" "argocd_app_of_apps_lab" {
                 path = "excercises/*/*/*"
               },
               {
-                path    = "*/_*"
+                path    = "excercises/*/*/_*"
                 exclude = true
               }
             ]
