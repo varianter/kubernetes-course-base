@@ -26,6 +26,12 @@ resource "helm_release" "loki" {
           replication_factor = 1
         }
 
+        limits_config = {
+          volume_enabled = true
+        }
+        auth_enabled = false # Disable multi-tenancy
+
+
         # Add the schema configuration for filesystem storage
         schemaConfig = {
           configs = [{
@@ -72,6 +78,50 @@ resource "helm_release" "loki" {
   ]
 }
 
+resource "helm_release" "promtail" {
+  name             = "promtail"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "promtail"
+  version          = "6.15.5" # Use a recent version of the Promtail chart
+  namespace        = local.monitoring_namespace
+  create_namespace = true
+
+  values = [
+    yamlencode({
+      config = {
+        clients = [
+          {
+            url = "http://loki.${local.monitoring_namespace}.svc.cluster.local:3100/loki/api/v1/push"
+          }
+        ]
+      }
+    })
+  ]
+
+  depends_on = [helm_release.loki]
+}
+
+resource "helm_release" "prometheus" {
+  name             = "prometheus"
+  repository       = "https://prometheus-community.github.io/helm-charts"
+  chart            = "prometheus"
+  version          = "25.20.0"
+  namespace        = local.monitoring_namespace
+  create_namespace = true
+
+  values = [
+    yamlencode({
+      server = {
+        ingress = {
+          enabled = false # Not exposing prometheus directly
+        }
+      }
+    })
+  ]
+
+  depends_on = [azurerm_kubernetes_cluster.default]
+}
+
 
 resource "helm_release" "grafana" {
   name             = "grafana"
@@ -89,9 +139,16 @@ resource "helm_release" "grafana" {
           datasources = [{
             name      = "Loki"
             type      = "loki"
-            url       = "http://loki-gateway.${local.monitoring_namespace}.svc.cluster.local:80"
+            url       = "http://loki.${local.monitoring_namespace}.svc.cluster.local:3100"
             access    = "proxy"
             isDefault = true
+            },
+            {
+              name      = "Prometheus"
+              type      = "prometheus"
+              url       = "http://prometheus-server.${local.monitoring_namespace}.svc.cluster.local"
+              access    = "proxy"
+              isDefault = false
           }]
         }
       }
