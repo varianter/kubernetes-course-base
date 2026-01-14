@@ -7,6 +7,10 @@ resource "kubernetes_namespace" "argocd" {
   depends_on = [azurerm_kubernetes_cluster.default]
 }
 
+locals {
+  argocd_domain_name = "${local.argocd_subdomain_name}.${local.cluster_subdomain_name}.${local.cluster_dns_zone_name}"
+}
+
 # ArgoCD Helm Release
 resource "helm_release" "argocd" {
   name       = "argocd"
@@ -19,7 +23,7 @@ resource "helm_release" "argocd" {
   values = [
     yamlencode({
       global = {
-        domain = "${local.argocd_subdomain_name}.${local.cluster_subdomain_name}.${local.cluster_dns_zone_name}"
+        domain = local.argocd_domain_name
       }
 
       configs = {
@@ -28,23 +32,23 @@ resource "helm_release" "argocd" {
         }
 
         cm = {
-          "url" = "${local.argocd_subdomain_name}.${local.cluster_subdomain_name}.${local.cluster_dns_zone_name}"
+          "url" = local.argocd_domain_name
         }
       }
 
       server = {
         ingress = {
           enabled          = true
-          ingressClassName = "nginx"
+          ingressClassName = local.default_ingress_classname
           annotations = {
             "cert-manager.io/cluster-issuer"               = local.letsencrypt_cert_cluster_issuer
             "nginx.ingress.kubernetes.io/ssl-redirect"     = "true"
             "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
           }
-          hosts = ["${local.argocd_subdomain_name}.${local.cluster_subdomain_name}.${local.cluster_dns_zone_name}"]
+          hosts = [local.argocd_domain_name]
           tls = [{
             secretName = "argocd-tls"
-            hosts      = ["${local.argocd_subdomain_name}.${local.cluster_subdomain_name}.${local.cluster_dns_zone_name}"]
+            hosts      = [local.argocd_domain_name]
           }]
         }
 

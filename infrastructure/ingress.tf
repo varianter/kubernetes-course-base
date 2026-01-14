@@ -1,3 +1,6 @@
+locals {
+  default_ingress_classname = "nginx"
+}
 
 # Nginx Ingress Controller
 resource "helm_release" "ingress_nginx" {

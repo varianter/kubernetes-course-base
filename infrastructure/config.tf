@@ -19,6 +19,8 @@ locals {
   node_pool_max_pods              = 60
   repository_url                  = ""
   letsencrypt_cert_cluster_issuer = "letsencrypt-lab"
+
+  cluster_domain = "${local.cluster_subdomain_name}.${local.cluster_dns_zone_name}"
 }
 
 terraform {
